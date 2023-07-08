@@ -12,29 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
-import { blogRouter } from "./routes/blogs";
+import 'dotenv/config';
+import express, { NextFunction, Request, Response } from 'express';
+import morgan from 'morgan';
+import { isHttpError } from 'http-errors';
+import { blogRouter } from './routes/blogs';
 
 export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
-app.use("/api/blogs", blogRouter);
+app.use('/api/blogs', blogRouter);
 
-app.use("/foo", (req: Request, res: Response, next: NextFunction) => {
-  next(new Error(`wrong path of ${req}`));
+/*
+app.use('/foo', (req: Request, res: Response, next: NextFunction) => {
+  // next(new Error(`wrong path of ${req}`));
+  console.log(req.url);
+
+  next(createHttpError(404, `wrong path of ${req.url}`));
 });
+*/
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.error(error);
-  let errMessage = "Unknown error";
-  if (error instanceof Error) {
+  console.error('error: ', error);
+  let errMessage = 'Unknown error';
+  let statusCode = 500;
+  // if (error instanceof Error) {
+  //   errMessage = error.message;
+  // }
+
+  // receive error from http-errors as created in controllers/blogs.ts
+  if (isHttpError(error)) {
     errMessage = error.message;
+    statusCode = error.status;
   }
-  res.status(500).json({ errMessage: errMessage });
+  res.status(statusCode).json({ errMessage: errMessage });
 });

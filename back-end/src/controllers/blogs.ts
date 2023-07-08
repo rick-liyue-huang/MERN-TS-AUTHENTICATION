@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import { BlogModel } from "../models/blog";
+import { RequestHandler } from 'express';
+import mongoose from 'mongoose';
+import { BlogModel } from '../models/blog';
+import createHttpError from 'http-errors';
 
-export const getAllBlogsController: RequestHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+interface CreateBlogBody {
+  title?: string;
+  text?: string;
+}
+
+export const getAllBlogsController: RequestHandler = async (req, res, next) => {
   try {
     // throw new Error('test');
     const blogs = await BlogModel.find().exec();
@@ -29,31 +32,47 @@ export const getAllBlogsController: RequestHandler = async (
   }
 };
 
-export const getBlogByIdController: RequestHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const blogId = req.params.blogId;
-  console.log(blogId);
-
+export const getBlogByIdController: RequestHandler = async (req, res, next) => {
   try {
-    const singleBlog = await BlogModel.findById(blogId).exec();
+    const blogIdString = req.params.blogId;
+
+    // const blogId = new mongoose.Types.ObjectId(blogIdString);
+    console.log(typeof blogIdString);
+
+    // careful: mongoose.isValidObjectId() is used to check if the string is a valid ObjectId
+    if (!mongoose.isValidObjectId(blogIdString)) {
+      throw createHttpError(400, 'Invalid blog id!!!');
+    }
+
+    const singleBlog = await BlogModel.findById(blogIdString).exec();
+
+    // console.log('----------- singleBlog ---------- : ', singleBlog);
+
+    // after using mongoose.isValidObjectId(), the following check is for the case that the blogId is not found
+    if (!singleBlog) {
+      throw createHttpError(404, 'Blog not found!!!');
+    }
     res.status(200).json(singleBlog);
   } catch (err) {
     next(err);
   }
 };
 
-export const createBlogController: RequestHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const createBlogController: RequestHandler<
+  unknown,
+  unknown,
+  CreateBlogBody,
+  unknown
+> = async (req, res, next) => {
   const title = req.body.title;
   const text = req.body.text;
 
   try {
+    if (!title) {
+      // send the error to the error handler
+      throw createHttpError(400, 'Missing title!!!');
+    }
+
     const newBlog = await BlogModel.create({ title, text });
     res.status(201).json(newBlog);
   } catch (err) {
