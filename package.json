@@ -12,7 +12,8 @@
     "prettier": "3.0.0"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md, ts, tsx}": "prettier --write",
+    "*.js": "eslint --cache --fix"
   },
   "scripts": {
     "prepare": "husky install"
