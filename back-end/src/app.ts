@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
-import morgan from 'morgan';
-import { blogRouter } from './routes/blogs';
+import "dotenv/config";
+import express, { NextFunction, Request, Response } from "express";
+import morgan from "morgan";
+import { blogRouter } from "./routes/blogs";
 
 export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
-app.use('/api/blogs', blogRouter);
+app.use("/api/blogs", blogRouter);
 
-app.use('/foo', (req: Request, res: Response, next: NextFunction) => {
+app.use("/foo", (req: Request, res: Response, next: NextFunction) => {
   next(new Error(`wrong path of ${req}`));
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);
-  let errMessage = 'Unknown error';
+  let errMessage = "Unknown error";
   if (error instanceof Error) {
     errMessage = error.message;
   }

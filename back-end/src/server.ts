@@ -11,10 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import 'dotenv/config';
-import mongoose, { Error } from 'mongoose';
-import environmentValidate from './utils/environmentValidate';
-import { app } from './app';
+import "dotenv/config";
+import mongoose, { Error } from "mongoose";
+import environmentValidate from "./utils/environmentValidate";
+import { app } from "./app";
 
 // const PORT = process.env.PORT || 3001;
 const PORT = environmentValidate.PORT;
@@ -23,7 +23,7 @@ const PORT = environmentValidate.PORT;
 mongoose
   .connect(environmentValidate.MONGODB_CONNECTION_STRING)
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
 
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);

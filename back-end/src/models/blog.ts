@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { InferSchemaType, Schema, model } from 'mongoose';
+import { InferSchemaType, Schema, model } from "mongoose";
 
 const blogSchema = new Schema(
   {
@@ -21,9 +21,9 @@ const blogSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 type BlogType = InferSchemaType<typeof blogSchema>;
 
-export const BlogModel = model<BlogType>('Blog', blogSchema);
+export const BlogModel = model<BlogType>("Blog", blogSchema);

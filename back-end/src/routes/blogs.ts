@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import express from 'express';
+import express from "express";
 import {
   createBlogController,
   getAllBlogsController,
   getBlogByIdController,
-} from '../controllers/blogs';
+} from "../controllers/blogs";
 
 export const blogRouter = express.Router();
 
 blogRouter
-  .get('/', getAllBlogsController)
-  .post('/', createBlogController)
-  .get('/:blogId', getBlogByIdController);
+  .get("/", getAllBlogsController)
+  .post("/", createBlogController)
+  .get("/:blogId", getBlogByIdController);

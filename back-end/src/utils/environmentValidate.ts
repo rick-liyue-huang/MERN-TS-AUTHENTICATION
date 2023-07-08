@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { cleanEnv } from 'envalid';
-import { str, port } from 'envalid/dist/validators';
+import { cleanEnv } from "envalid";
+import { str, port } from "envalid/dist/validators";
 
 export default cleanEnv(process.env, {
   MONGODB_CONNECTION_STRING: str(),

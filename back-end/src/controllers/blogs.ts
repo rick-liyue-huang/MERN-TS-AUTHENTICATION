@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NextFunction, Request, RequestHandler, Response } from 'express';
-import { BlogModel } from '../models/blog';
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { BlogModel } from "../models/blog";
 
 export const getAllBlogsController: RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     // throw new Error('test');
@@ -32,7 +32,7 @@ export const getAllBlogsController: RequestHandler = async (
 export const getBlogByIdController: RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const blogId = req.params.blogId;
   console.log(blogId);
@@ -48,7 +48,7 @@ export const getBlogByIdController: RequestHandler = async (
 export const createBlogController: RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const title = req.body.title;
   const text = req.body.text;
