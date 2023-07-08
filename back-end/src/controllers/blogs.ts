@@ -22,6 +22,15 @@ interface CreateBlogBody {
   text?: string;
 }
 
+interface UpdateBlogBody {
+  title?: string;
+  text?: string;
+}
+
+interface UpdateBlogParams {
+  blogId: string;
+}
+
 export const getAllBlogsController: RequestHandler = async (req, res, next) => {
   try {
     // throw new Error('test');
@@ -75,6 +84,59 @@ export const createBlogController: RequestHandler<
 
     const newBlog = await BlogModel.create({ title, text });
     res.status(201).json(newBlog);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateBlogController: RequestHandler<
+  UpdateBlogParams,
+  unknown,
+  UpdateBlogBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const blogIdString = req.params.blogId;
+    const blogTitle = req.body.title;
+    const blogText = req.body.text;
+
+    if (!mongoose.isValidObjectId(blogIdString)) {
+      throw createHttpError(400, 'Invalid blog id!!!');
+    }
+
+    if (!blogTitle) {
+      throw createHttpError(400, 'Missing title!!!');
+    }
+
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      blogIdString,
+      { title: blogTitle, text: blogText },
+      { new: true }
+    ).exec();
+
+    if (!updatedBlog) {
+      throw createHttpError(404, 'Blog not found!!!');
+    }
+
+    res.status(200).json(updatedBlog);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteBlogController: RequestHandler = async (req, res, next) => {
+  try {
+    const blogIdString = req.params.blogId;
+
+    if (!mongoose.isValidObjectId(blogIdString)) {
+      throw createHttpError(400, 'Invalid blog id!!!');
+    }
+
+    const deletedBlog = await BlogModel.findByIdAndDelete(blogIdString).exec();
+    if (!deletedBlog) {
+      throw createHttpError(404, 'Blog not found!!!');
+    }
+    res.status(200).json({ message: 'Blog deleted successfully!!!' });
   } catch (err) {
     next(err);
   }
